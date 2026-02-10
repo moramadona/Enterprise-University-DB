@@ -1,0 +1,47 @@
+-- University Management System - Database Schema
+-- Goal: Professional Data Integrity & Scalability
+
+CREATE DATABASE UniversityERP;
+USE UniversityERP;
+
+-- 1. Departments Table
+CREATE TABLE Departments (
+    dept_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    head_of_dept VARCHAR(150),
+    budget DECIMAL(12, 2) DEFAULT 0.00
+);
+
+-- 2. Students Table (Personal & Academic Info)
+CREATE TABLE Students (
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(150) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20),
+    enrollment_date DATE DEFAULT (CURRENT_DATE),
+    dept_id INT,
+    CONSTRAINT fk_student_dept FOREIGN KEY (dept_id) 
+        REFERENCES Departments(dept_id) ON DELETE SET NULL
+);
+
+-- 3. Courses Table
+CREATE TABLE Courses (
+    course_id INT PRIMARY KEY AUTO_INCREMENT,
+    course_code VARCHAR(10) UNIQUE,
+    title VARCHAR(100) NOT NULL,
+    credits INT CHECK (credits BETWEEN 1 AND 6),
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES Departments(dept_id)
+);
+
+-- 4. Enrollments (Bridge Table for Many-to-Many)
+CREATE TABLE Enrollments (
+    enrollment_id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    semester VARCHAR(20),
+    grade DECIMAL(3, 2) DEFAULT 0.00,
+    status ENUM('Enrolled', 'Completed', 'Dropped') DEFAULT 'Enrolled',
+    FOREIGN KEY (student_id) REFERENCES Students(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
+);

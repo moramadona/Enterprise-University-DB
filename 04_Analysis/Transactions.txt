@@ -1,0 +1,11 @@
+-- Transaction: Registering a student in a course safely
+START TRANSACTION;
+
+-- 1. Check if the course has space (Business Logic)
+-- 2. Insert the enrollment record
+INSERT INTO Enrollments (student_id, course_id, semester) 
+VALUES (1, 2, 'Fall 2025');
+
+-- 3. Update any related logs or counts (if applicable)
+-- If everything is fine, save changes
+COMMIT;
